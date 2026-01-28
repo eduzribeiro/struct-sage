@@ -301,7 +301,7 @@ export function BudgetPreview({
             }}>Especialista em Engenharia de Estruturas e Fundações</p>
             </div>
             <div className="text-right">
-              <img src={gamaLogo} alt="Gama Cálculo Estrutural" className="h-12 w-auto object-contain ml-auto" />
+              <img alt="Gama Cálculo Estrutural" className="h-12 w-auto object-contain ml-auto" src="/lovable-uploads/23ca4edc-e529-437f-b7db-927c7ac2d666.png" />
               <p className="text-xs mt-1" style={{
               color: '#6b7280'
             }}>Segurança estrutural começa com um projeto confiável.</p>
