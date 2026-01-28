@@ -1,4 +1,4 @@
-import { Building2 } from 'lucide-react';
+import gamaLogo from '@/assets/gama-logo.png';
 
 export function Header() {
   return (
@@ -6,9 +6,11 @@ export function Header() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <Building2 className="h-7 w-7" />
-            </div>
+            <img 
+              src={gamaLogo} 
+              alt="Gama Cálculo Estrutural" 
+              className="h-12 w-auto object-contain bg-white rounded-lg px-2 py-1"
+            />
             <div>
               <h1 className="text-2xl font-bold font-heading tracking-tight">EngBudget AI</h1>
               <p className="text-sm text-primary-foreground/80">Orçamentos de Engenharia Estrutural</p>

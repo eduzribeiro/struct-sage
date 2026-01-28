@@ -1,7 +1,7 @@
 import { BudgetFormData, CalculatedBudget, CompanyInfo, DEFAULT_COMPANY_INFO, FUNDACAO_OPTIONS, ESTRUTURA_OPTIONS, CONTENCAO_OPTIONS } from '@/types/budget';
 import { formatCurrency, estimateDeadline, formatDate } from '@/utils/budgetCalculations';
 import { Globe, Instagram, Phone, Mail } from 'lucide-react';
-
+import gamaLogo from '@/assets/gama-logo.png';
 interface BudgetPreviewProps {
   formData: BudgetFormData;
   budget: CalculatedBudget;
@@ -42,8 +42,12 @@ export function BudgetPreview({ formData, budget, companyInfo = DEFAULT_COMPANY_
             <h2 className="text-2xl font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>COMERCIAL</h2>
           </div>
           <div className="text-right">
-            <h1 className="text-4xl font-bold" style={{ fontFamily: "'Montserrat', sans-serif", color: 'white' }}>{companyInfo.name}</h1>
-            <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.875rem', letterSpacing: '0.1em' }}>{companyInfo.subtitle}</p>
+            <img 
+              src={gamaLogo} 
+              alt="Gama Cálculo Estrutural" 
+              className="h-16 w-auto object-contain bg-white rounded-lg px-3 py-2"
+              style={{ marginLeft: 'auto' }}
+            />
           </div>
         </div>
       </div>
@@ -229,8 +233,12 @@ export function BudgetPreview({ formData, budget, companyInfo = DEFAULT_COMPANY_
               <p className="text-xs mt-1" style={{ color: '#6b7280' }}>Especialista em Engenharia de Estruturas e Fundações</p>
             </div>
             <div className="text-right">
-              <h2 className="text-2xl font-bold" style={{ fontFamily: "'Montserrat', sans-serif", color: 'hsl(28, 95%, 53%)' }}>{companyInfo.name}</h2>
-              <p className="text-xs" style={{ color: '#6b7280' }}>Segurança estrutural começa com um projeto confiável.</p>
+              <img 
+                src={gamaLogo} 
+                alt="Gama Cálculo Estrutural" 
+                className="h-12 w-auto object-contain ml-auto"
+              />
+              <p className="text-xs mt-1" style={{ color: '#6b7280' }}>Segurança estrutural começa com um projeto confiável.</p>
             </div>
           </div>
         </section>
