@@ -6,7 +6,7 @@ export function Header() {
           <div className="flex items-center gap-3">
             <img alt="Gama Cálculo Estrutural" className="h-12 w-auto object-contain bg-white rounded-lg px-2 py-1" src="/lovable-uploads/8f2a2089-73cb-4c6f-a486-4af882a94bf5.png" />
             <div>
-              <h1 className="text-2xl font-bold font-heading tracking-tight">GAMA Cálculo Estrutural</h1>
+              <h1 className="text-2xl font-bold font-heading tracking-tight">GAMA2 Cálculo Estrutural</h1>
               <p className="text-sm text-primary-foreground/80">Orçamentos de Engenharia Estrutural</p>
             </div>
           </div>
