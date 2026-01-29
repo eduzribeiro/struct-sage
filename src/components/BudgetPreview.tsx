@@ -1,12 +1,13 @@
 import { BudgetFormData, CalculatedBudget, CompanyInfo, DEFAULT_COMPANY_INFO, FUNDACAO_OPTIONS, ESTRUTURA_OPTIONS, CONTENCAO_OPTIONS } from '@/types/budget';
 import { formatCurrency, estimateDeadline, formatDate } from '@/utils/budgetCalculations';
 import { Globe, Instagram, Phone, Mail } from 'lucide-react';
-import gamaLogo from '@/assets/gama-logo.png';
+
 interface BudgetPreviewProps {
   formData: BudgetFormData;
   budget: CalculatedBudget;
   companyInfo?: CompanyInfo;
 }
+
 export function BudgetPreview({
   formData,
   budget,
@@ -14,327 +15,322 @@ export function BudgetPreview({
 }: BudgetPreviewProps) {
   const prazo = estimateDeadline(formData);
   const dataAtual = formatDate();
+  
   const getFundacaoLabels = () => formData.tipoFundacao.map(v => FUNDACAO_OPTIONS.find(o => o.value === v)?.label).filter(Boolean);
   const getEstruturaLabels = () => formData.tipoEstrutura.map(v => ESTRUTURA_OPTIONS.find(o => o.value === v)?.label).filter(Boolean);
   const getContencaoLabels = () => formData.tipoContencao.map(v => CONTENCAO_OPTIONS.find(o => o.value === v)?.label).filter(Boolean);
+
   const hasContent = budget.subtotal > 0 || formData.obraName || formData.clienteName;
+
   if (!hasContent) {
-    return <div className="pdf-preview min-h-[600px] flex items-center justify-center p-8">
-        <div className="text-center text-muted-foreground">
-          <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+    return (
+      <div className="bg-white min-h-[600px] flex items-center justify-center p-8" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+        <div className="text-center" style={{ color: '#6b7280' }}>
+          <div className="w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: '#f3f4f6' }}>
             <span className="text-4xl">📋</span>
           </div>
           <p className="text-lg font-medium">Preencha o formulário</p>
           <p className="text-sm">A visualização do orçamento aparecerá aqui</p>
         </div>
-      </div>;
+      </div>
+    );
   }
-  return <div id="budget-pdf" className="pdf-preview" style={{
-    fontFamily: "'Open Sans', sans-serif",
-    backgroundColor: 'white',
-    color: '#1f2937'
-  }}>
-      {/* Header */}
-      <div className="pdf-header px-8 pt-8 pb-16">
-        <div className="flex justify-between items-start">
-          <div style={{
-          color: 'white'
-        }}>
-            <h1 className="text-3xl font-bold mb-1" style={{
-            fontFamily: "'Montserrat', sans-serif"
-          }}>PROPOSTA</h1>
-            <h2 className="text-2xl font-bold" style={{
-            fontFamily: "'Montserrat', sans-serif"
-          }}>COMERCIAL</h2>
-          </div>
-          <div className="text-right">
-            <img alt="Gama Cálculo Estrutural" className="h-16 w-auto object-contain bg-white rounded-lg px-3 py-2" style={{
-            marginLeft: 'auto'
-          }} src="/lovable-uploads/3987e458-ad18-479c-9750-77fc51b7f790.png" />
-          </div>
+
+  return (
+    <div id="budget-pdf" style={{ fontFamily: "'Open Sans', sans-serif", backgroundColor: 'white', color: '#374151' }}>
+      
+      {/* Header - Diagonal gray with logo */}
+      <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
+        {/* Gray diagonal background */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: '#d1d5db',
+          clipPath: 'polygon(0 0, 60% 0, 45% 100%, 0 100%)'
+        }} />
+        
+        {/* PROPOSTA COMERCIAL text */}
+        <div style={{ position: 'absolute', top: '30px', left: '40px', color: '#1f2937' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: 'bold', fontFamily: "'Montserrat', sans-serif", margin: 0, lineHeight: 1.1 }}>
+            PROPOSTA
+          </h1>
+          <h2 style={{ fontSize: '28px', fontWeight: 'bold', fontFamily: "'Montserrat', sans-serif", margin: 0, lineHeight: 1.1 }}>
+            COMERCIAL
+          </h2>
+        </div>
+
+        {/* Logo on the right */}
+        <div style={{ position: 'absolute', top: '20px', right: '40px' }}>
+          <img 
+            src="/lovable-uploads/8f2a2089-73cb-4c6f-a486-4af882a94bf5.png" 
+            alt="Gama Cálculo Estrutural" 
+            style={{ height: '80px', width: 'auto' }}
+          />
         </div>
       </div>
 
-      {/* Client Info */}
-      <div className="px-8 -mt-6 mb-8">
-        <div className="rounded-lg shadow-md p-6 grid grid-cols-2 gap-6" style={{
-        backgroundColor: 'white'
-      }}>
+      {/* Client Info Section */}
+      <div style={{ padding: '0 40px', marginTop: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
-            <p className="text-sm font-semibold" style={{
-            color: 'hsl(28, 95%, 53%)'
-          }}>Cliente:</p>
-            <p className="font-medium" style={{
-            color: '#1f2937'
-          }}>{formData.clienteName || '—'}</p>
-            <p className="text-sm" style={{
-            color: '#6b7280'
-          }}>{formData.clienteEmail || ''}</p>
+            <p style={{ color: '#f97316', fontWeight: 600, fontSize: '14px', margin: 0 }}>Cliente:</p>
+            <p style={{ color: '#374151', fontWeight: 500, fontSize: '14px', margin: '4px 0 0 0' }}>{formData.clienteName || '—'}</p>
+            <p style={{ color: '#6b7280', fontSize: '13px', margin: '2px 0 0 0' }}>{formData.clienteEmail || ''}</p>
           </div>
-          <div className="text-right">
-            <p className="text-sm font-semibold" style={{
-            color: 'hsl(28, 95%, 53%)'
-          }}>Local/Data:</p>
-            <p className="font-medium" style={{
-            color: '#1f2937'
-          }}>{formData.obraLocal || '—'}</p>
-            <p className="text-sm" style={{
-            color: '#6b7280'
-          }}>{dataAtual}</p>
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ color: '#f97316', fontWeight: 600, fontSize: '14px', margin: 0 }}>Local/Data:</p>
+            <p style={{ color: '#374151', fontWeight: 500, fontSize: '14px', margin: '4px 0 0 0' }}>{formData.obraLocal || '—'}</p>
+            <p style={{ color: '#6b7280', fontSize: '13px', margin: '2px 0 0 0' }}>{dataAtual}</p>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="px-8 pb-8 space-y-6">
-        {/* Escopo do Serviço */}
-        <section>
-          <h3 className="pdf-section-title">ESCOPO DO SERVIÇO:</h3>
-          <p className="text-sm leading-relaxed" style={{
-          color: '#374151'
-        }}>
+      <div style={{ padding: '30px 40px' }}>
+        
+        {/* ESCOPO DO SERVIÇO */}
+        <section style={{ marginBottom: '24px' }}>
+          <h3 style={{ color: '#374151', fontSize: '15px', fontWeight: 600, margin: '0 0 8px 0', textTransform: 'uppercase' }}>
+            ESCOPO DO SERVIÇO:
+          </h3>
+          <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: 0, textAlign: 'justify' }}>
             {formData.escopoServico || `A presente proposta tem por objeto a elaboração dos projetos de infraestrutura e superestrutura referentes à obra ${formData.obraName || '[Nome da Obra]'}, localizada em ${formData.obraLocal || '[Local]'}.`}
           </p>
         </section>
 
-        {/* Infraestrutura - Fundações */}
-        {formData.tipoFundacao.length > 0 && <section>
-            <h3 className="pdf-section-title">Infraestrutura:</h3>
-            <p className="text-sm leading-relaxed" style={{
-          color: '#374151'
-        }}>
+        {/* Infraestrutura */}
+        {formData.tipoFundacao.length > 0 && (
+          <section style={{ marginBottom: '24px' }}>
+            <h3 style={{ color: '#f97316', fontSize: '15px', fontWeight: 600, margin: '0 0 8px 0' }}>
+              Infraestrutura:
+            </h3>
+            <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: 0, textAlign: 'justify' }}>
               O projeto contemplará as fundações dimensionadas conforme as características geotécnicas obtidas no laudo de sondagem. 
               Tipos de fundação previstos: {getFundacaoLabels().join('; ')}.
               A definição do tipo de fundação será estabelecida em função da capacidade de carga do solo e das solicitações estruturais, 
               assegurando desempenho, segurança e durabilidade da obra.
             </p>
-          </section>}
+          </section>
+        )}
 
         {/* Superestrutura */}
-        {formData.tipoEstrutura.length > 0 && <section>
-            <h3 className="pdf-section-title">Superestrutura:</h3>
-            <p className="text-sm leading-relaxed" style={{
-          color: '#374151'
-        }}>
+        {formData.tipoEstrutura.length > 0 && (
+          <section style={{ marginBottom: '24px' }}>
+            <h3 style={{ color: '#f97316', fontSize: '15px', fontWeight: 600, margin: '0 0 8px 0' }}>
+              Superestrutura:
+            </h3>
+            <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: 0, textAlign: 'justify' }}>
               O projeto estrutural será desenvolvido seguindo rigorosamente os trâmites de compatibilização com os projetos de 
               instalações de engenharia e o projeto arquitetônico. Tipos de estrutura previstos: {getEstruturaLabels().join('; ')}.
               {formData.areaConstruida && ` Área total: ${formData.areaConstruida} m².`}
               {formData.pavimentosTipo && ' Projeto conta com pavimentos tipo, aplicando-se redução de 15% conforme premissas.'}
             </p>
-          </section>}
+          </section>
+        )}
 
         {/* Contenções */}
-        {formData.tipoContencao.length > 0 && <section>
-            <h3 className="pdf-section-title">Contenções:</h3>
-            <p className="text-sm leading-relaxed" style={{
-          color: '#374151'
-        }}>
+        {formData.tipoContencao.length > 0 && (
+          <section style={{ marginBottom: '24px' }}>
+            <h3 style={{ color: '#f97316', fontSize: '15px', fontWeight: 600, margin: '0 0 8px 0' }}>
+              Contenções:
+            </h3>
+            <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: 0, textAlign: 'justify' }}>
               O projeto contemplará contenções do tipo: {getContencaoLabels().join('; ')}.
               {formData.areaContencao && ` Área de contenção: ${formData.areaContencao} m².`}
             </p>
-          </section>}
+          </section>
+        )}
 
-        {/* Normas Técnicas */}
-        <section>
-          <h3 className="pdf-section-title">Normas Técnicas Aplicáveis:</h3>
-          <p className="text-sm mb-2" style={{
-          color: '#374151'
-        }}>
+        {/* Compatibilização de Projetos */}
+        <section style={{ marginBottom: '24px' }}>
+          <h3 style={{ color: '#f97316', fontSize: '15px', fontWeight: 600, margin: '0 0 8px 0' }}>
+            Compatibilização de Projetos:
+          </h3>
+          <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: 0, textAlign: 'justify' }}>
+            O projeto estrutural será desenvolvido seguindo rigorosamente os trâmites de compatibilização com os projetos de 
+            instalações de engenharia e o projeto arquitetônico, assegurando alinhamento entre as disciplinas, evitando conflitos e 
+            garantindo maior eficiência na execução da obra.
+          </p>
+        </section>
+
+        {/* Normas Técnicas Aplicáveis */}
+        <section style={{ marginBottom: '24px' }}>
+          <h3 style={{ color: '#f97316', fontSize: '15px', fontWeight: 600, margin: '0 0 8px 0' }}>
+            Normas Técnicas Aplicáveis:
+          </h3>
+          <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: '0 0 8px 0', textAlign: 'justify' }}>
             Os serviços de dimensionamento estrutural serão realizados em conformidade com as normas da Associação Brasileira de Normas Técnicas (ABNT), destacando-se:
           </p>
-          <ul className="text-sm list-disc list-inside space-y-1" style={{
-          color: '#374151'
-        }}>
+          <ul style={{ color: '#374151', fontSize: '13px', lineHeight: 1.8, margin: 0, paddingLeft: '20px' }}>
             <li>NBR 6118:2014 – Projeto de Estruturas de Concreto – Procedimento;</li>
             <li>NBR 6122:2019 – Projeto e Execução de Fundações;</li>
-            <li>NBR 8800:2008 – Projeto de Estruturas de Aço e de Estruturas Mistas de Aço e Concreto;</li>
-            <li>NBR 15961:2011 – Alvenaria Estrutural – Blocos de Concreto;</li>
+            <li>NBR 8800:2008 – Projeto de Estruturas de Aço e de Estruturas Mistas de Aço e Concreto de Edifícios;</li>
+            <li>NBR 9062:2017 – Projeto e Execução de Estruturas Pré-moldadas de Concreto;</li>
+            <li>NBR 14762:2010 – Dimensionamento de Estruturas de Aço Constituídas por Perfis Formados a Frio;</li>
             <li>Demais normas correlatas que se fizerem necessárias.</li>
           </ul>
         </section>
 
         {/* Metodologia */}
-        <section>
-          <h3 className="pdf-section-title">Metodologia:</h3>
-          <p className="text-sm leading-relaxed" style={{
-          color: '#374151'
-        }}>
+        <section style={{ marginBottom: '24px' }}>
+          <h3 style={{ color: '#f97316', fontSize: '15px', fontWeight: 600, margin: '0 0 8px 0' }}>
+            Metodologia:
+          </h3>
+          <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: 0, textAlign: 'justify' }}>
             Reforçamos que nossa empresa adota integralmente a metodologia BIM (Building Information Modeling) em seus projetos, 
             proporcionando maior precisão, integração entre disciplinas, otimização de processos e redução de riscos durante a execução da obra.
           </p>
         </section>
 
-        {/* Entregáveis */}
-        <section>
-          <h3 className="pdf-section-title">Entregáveis:</h3>
-          <ul className="text-sm list-disc list-inside space-y-1" style={{
-          color: '#374151'
-        }}>
-            <li>Projeto executivo em PDF, DWG e IFC, desenvolvido em metodologia BIM</li>
-            <li>Lista de materiais aplicáveis ao projeto</li>
-            <li>ART de projeto</li>
-            {formData.visitaTecnica && <li>Visita técnica ({formData.horasVisita}h) – custos de deslocamento, hospedagem e alimentação sob responsabilidade da contratante</li>}
-          </ul>
-        </section>
-
-        {/* Prazo */}
-        <section>
-          <h3 className="pdf-section-title">Prazo de Entrega:</h3>
-          <p className="text-sm leading-relaxed" style={{
-          color: '#374151'
-        }}>
+        {/* Prazos e etapas */}
+        <section style={{ marginBottom: '24px' }}>
+          <h3 style={{ color: '#f97316', fontSize: '15px', fontWeight: 600, margin: '0 0 8px 0' }}>
+            Prazos e etapas:
+          </h3>
+          <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: '0 0 12px 0', textAlign: 'justify' }}>
             O prazo de execução dos serviços propostos é de <strong>{prazo}</strong>, contados a partir da entrega de todas as informações 
             necessárias para o início do projeto, incluindo dados geotécnicos, arquitetônicos e das instalações de engenharia.
           </p>
+          <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: '0 0 12px 0', textAlign: 'justify' }}>
+            O desenvolvimento do projeto será estruturado de forma a garantir a qualidade técnica, a compatibilização entre disciplinas e a eficiência na execução.
+          </p>
+          <p style={{ color: '#374151', fontSize: '13px', fontWeight: 500, margin: '0 0 8px 0' }}>
+            As etapas do projeto incluem:
+          </p>
+          <ul style={{ color: '#374151', fontSize: '13px', lineHeight: 1.8, margin: 0, paddingLeft: '20px' }}>
+            <li>Reunião de alinhamento: validação dos métodos construtivos e premissas técnicas;</li>
+            <li>Pré-projeto: lançamentos preliminares dos elementos estruturais, visando compatibilização com arquitetura e instalações;</li>
+            <li>Projeto executivo: detalhamento completo de todos os elementos estruturais, incluindo dimensões, materiais e especificações técnicas, em conformidade com as normas ABNT aplicáveis.</li>
+            <li>Emissão de documentação final: pranchas em formato DWG, PDF e arquivo IFC, bem como ART de responsabilidade técnica pela elaboração do projeto.</li>
+            {formData.visitaTecnica && <li>Visita técnica ({formData.horasVisita}h) – custos de deslocamento, hospedagem e alimentação sob responsabilidade da contratante.</li>}
+          </ul>
         </section>
 
         {/* Valores */}
-        <section>
-          <h3 className="pdf-section-title">Valores:</h3>
-          <div className="rounded-lg overflow-hidden" style={{
-          border: '1px solid #e5e7eb'
-        }}>
-            <table className="w-full text-sm">
-              <tbody>
-                {budget.infraestruturaFundacoes && <tr style={{
-                borderBottom: '1px solid #f3f4f6'
+        <section style={{ marginBottom: '24px' }}>
+          <h3 style={{ color: '#f97316', fontSize: '15px', fontWeight: 600, margin: '0 0 12px 0' }}>
+            Valores:
+          </h3>
+          <div style={{ maxWidth: '500px' }}>
+            {budget.infraestruturaFundacoes && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e5e7eb' }}>
+                <span style={{ color: '#374151', fontSize: '13px' }}>Projeto de infraestrutura - Fundações</span>
+                <span style={{ color: '#374151', fontSize: '13px' }}>{formatCurrency(budget.infraestruturaFundacoes.valor)}</span>
+              </div>
+            )}
+            {budget.infraestruturaContencoes && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e5e7eb' }}>
+                <span style={{ color: '#374151', fontSize: '13px' }}>Projeto de infraestrutura - Contenções</span>
+                <span style={{ color: '#374151', fontSize: '13px' }}>{formatCurrency(budget.infraestruturaContencoes.valor)}</span>
+              </div>
+            )}
+            {budget.superestrutura && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e5e7eb' }}>
+                <span style={{ color: '#374151', fontSize: '13px' }}>Projeto de superestrutura - Estruturas</span>
+                <span style={{ color: '#374151', fontSize: '13px' }}>{formatCurrency(budget.superestrutura.valor)}</span>
+              </div>
+            )}
+            {budget.visitaTecnica && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e5e7eb' }}>
+                <span style={{ color: '#374151', fontSize: '13px' }}>Visita técnica</span>
+                <span style={{ color: '#374151', fontSize: '13px' }}>{formatCurrency(budget.visitaTecnica.valor)}</span>
+              </div>
+            )}
+            
+            {/* Total row */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '2px solid #374151' }}>
+              <span style={{ color: '#374151', fontSize: '14px', fontWeight: 600 }}>Total:</span>
+              <span style={{ color: '#374151', fontSize: '18px', fontWeight: 700 }}>{formatCurrency(budget.total)}</span>
+            </div>
+            
+            {/* Discount row */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0' }}>
+              <span style={{ color: '#374151', fontSize: '13px' }}>Desconto de 7% para pagamento à vista</span>
+              <span style={{ 
+                color: '#f97316', 
+                fontSize: '22px', 
+                fontWeight: 700,
+                border: '2px solid #f97316',
+                padding: '4px 12px',
+                borderRadius: '4px'
               }}>
-                    <td className="py-3 px-4" style={{
-                  color: '#374151'
-                }}>{budget.infraestruturaFundacoes.descricao}</td>
-                    <td className="py-3 px-4 text-right font-medium" style={{
-                  color: '#374151'
-                }}>{formatCurrency(budget.infraestruturaFundacoes.valor)}</td>
-                  </tr>}
-                {budget.infraestruturaContencoes && <tr style={{
-                borderBottom: '1px solid #f3f4f6'
-              }}>
-                    <td className="py-3 px-4" style={{
-                  color: '#374151'
-                }}>{budget.infraestruturaContencoes.descricao}</td>
-                    <td className="py-3 px-4 text-right font-medium" style={{
-                  color: '#374151'
-                }}>{formatCurrency(budget.infraestruturaContencoes.valor)}</td>
-                  </tr>}
-                {budget.superestrutura && <tr style={{
-                borderBottom: '1px solid #f3f4f6'
-              }}>
-                    <td className="py-3 px-4" style={{
-                  color: '#374151'
-                }}>
-                      {budget.superestrutura.descricao}
-                      {budget.superestrutura.descontoPavimentoTipo && budget.superestrutura.descontoPavimentoTipo > 0 && <span className="text-xs block" style={{
-                    color: '#16a34a'
-                  }}>
-                          (inclui desconto de 15% por pavimentos tipo)
-                        </span>}
-                    </td>
-                    <td className="py-3 px-4 text-right font-medium" style={{
-                  color: '#374151'
-                }}>{formatCurrency(budget.superestrutura.valor)}</td>
-                  </tr>}
-                {budget.visitaTecnica && <tr style={{
-                borderBottom: '1px solid #f3f4f6'
-              }}>
-                    <td className="py-3 px-4" style={{
-                  color: '#374151'
-                }}>{budget.visitaTecnica.descricao}</td>
-                    <td className="py-3 px-4 text-right font-medium" style={{
-                  color: '#374151'
-                }}>{formatCurrency(budget.visitaTecnica.valor)}</td>
-                  </tr>}
-                <tr style={{
-                backgroundColor: '#1f2937',
-                color: 'white'
-              }}>
-                  <td className="py-3 px-4 font-bold">Total:</td>
-                  <td className="py-3 px-4 text-right font-bold">{formatCurrency(budget.total)}</td>
-                </tr>
-                <tr style={{
-                backgroundColor: '#fff7ed'
-              }}>
-                  <td className="py-3 px-4 font-medium" style={{
-                  color: '#c2410c'
-                }}>Desconto de 7% para pagamento à vista:</td>
-                  <td className="py-3 px-4 text-right font-bold" style={{
-                  color: '#c2410c'
-                }}>{formatCurrency(budget.totalAVista)}</td>
-                </tr>
-              </tbody>
-            </table>
+                {formatCurrency(budget.totalAVista)}
+              </span>
+            </div>
           </div>
         </section>
 
         {/* Pagamento */}
-        <section>
-          <h3 className="pdf-section-title">Condições de Pagamento:</h3>
-          <p className="text-sm leading-relaxed" style={{
-          color: '#374151'
-        }}>
-            Uma entrada de <strong>15% ({formatCurrency(budget.entrada)})</strong>, com o saldo de <strong>85% ({formatCurrency(budget.saldo)})</strong> podendo 
-            ser quitado na entrega do projeto ou de acordo com o cronograma de faturamento da contratante, proporcionando flexibilidade e conveniência para a sua empresa.
+        <section style={{ marginBottom: '40px' }}>
+          <h3 style={{ color: '#f97316', fontSize: '15px', fontWeight: 600, margin: '0 0 8px 0' }}>
+            Pagamento:
+          </h3>
+          <p style={{ color: '#374151', fontSize: '13px', lineHeight: 1.7, margin: 0, textAlign: 'justify' }}>
+            Uma entrada de 15%, com o saldo de 85% podendo ser quitado na entrega do projeto ou de acordo com o cronograma de 
+            faturamento do contratante, proporcionando flexibilidade e conveniência para a sua empresa.
           </p>
-          <p className="text-sm mt-2 italic" style={{
-          color: '#6b7280'
-        }}>
+          <p style={{ color: '#374151', fontSize: '13px', marginTop: '24px', textAlign: 'right' }}>
             Este orçamento tem validade de 15 dias.
           </p>
         </section>
 
-        {/* Assinatura */}
-        <section className="pt-6" style={{
-        borderTop: '1px solid #e5e7eb'
-      }}>
-          <div className="flex justify-between items-end">
-            <div>
-              <p className="text-sm font-bold" style={{
-              color: '#1f2937'
-            }}>{companyInfo.director}</p>
-              <p className="text-sm" style={{
-              color: '#4b5563'
-            }}>{companyInfo.directorTitle}</p>
-              <p className="text-sm" style={{
-              color: '#4b5563'
-            }}>{companyInfo.crea}</p>
-              <p className="text-xs mt-1" style={{
-              color: '#6b7280'
-            }}>Especialista em Engenharia de Estruturas e Fundações</p>
-            </div>
-            <div className="text-right">
-              <img alt="Gama Cálculo Estrutural" className="h-12 w-auto object-contain ml-auto" src="/lovable-uploads/23ca4edc-e529-437f-b7db-927c7ac2d666.png" />
-              <p className="text-xs mt-1" style={{
-              color: '#6b7280'
-            }}>Segurança estrutural começa com um projeto confiável.</p>
-            </div>
-          </div>
+        {/* Signature Section */}
+        <section style={{ borderTop: '3px solid #f97316', paddingTop: '20px', marginBottom: '24px' }}>
+          <h4 style={{ color: '#374151', fontSize: '16px', fontWeight: 600, margin: '0 0 8px 0' }}>
+            Diretor de operações
+          </h4>
+          <p style={{ color: '#374151', fontSize: '13px', margin: '0 0 4px 0' }}>
+            {companyInfo.director} | Engenheiro civil | {companyInfo.crea}
+          </p>
+          <p style={{ color: '#6b7280', fontSize: '12px', margin: 0 }}>
+            Especialista em Engenharia de Estruturas e Fundações
+          </p>
         </section>
+
+        {/* Logo and tagline */}
+        <div style={{ textAlign: 'center', marginTop: '40px', marginBottom: '20px' }}>
+          <img 
+            src="/lovable-uploads/8f2a2089-73cb-4c6f-a486-4af882a94bf5.png" 
+            alt="Gama Cálculo Estrutural" 
+            style={{ height: '80px', width: 'auto', marginBottom: '16px' }}
+          />
+          <p style={{ color: '#f97316', fontSize: '16px', fontWeight: 600, margin: 0 }}>
+            Segurança estrutural começa com um projeto confiável. Fale conosco.
+          </p>
+        </div>
       </div>
 
       {/* Footer */}
-      <div className="px-8 py-4" style={{
-      backgroundColor: '#f3f4f6',
-      borderTop: '1px solid #e5e7eb'
-    }}>
-        <div className="flex items-center justify-center gap-6 text-xs" style={{
-        color: '#4b5563'
+      <div style={{ 
+        backgroundColor: '#f3f4f6', 
+        borderTop: '4px solid #d1d5db',
+        padding: '12px 40px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '24px',
+        flexWrap: 'wrap'
       }}>
-          <span className="flex items-center gap-1">
-            <Globe className="h-3 w-3" />
-            {companyInfo.website}
-          </span>
-          <span className="flex items-center gap-1">
-            <Instagram className="h-3 w-3" />
-            {companyInfo.instagram}
-          </span>
-          <span className="flex items-center gap-1">
-            <Phone className="h-3 w-3" />
-            {companyInfo.phone}
-          </span>
-          <span className="flex items-center gap-1">
-            <Mail className="h-3 w-3" />
-            {companyInfo.email}
-          </span>
-        </div>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#4b5563', fontSize: '12px' }}>
+          <Globe style={{ width: '14px', height: '14px' }} />
+          {companyInfo.website}
+        </span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#4b5563', fontSize: '12px' }}>
+          <Instagram style={{ width: '14px', height: '14px' }} />
+          {companyInfo.instagram}
+        </span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#4b5563', fontSize: '12px' }}>
+          <Phone style={{ width: '14px', height: '14px' }} />
+          {companyInfo.phone}
+        </span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#4b5563', fontSize: '12px' }}>
+          <Mail style={{ width: '14px', height: '14px' }} />
+          {companyInfo.email}
+        </span>
       </div>
-    </div>;
+    </div>
+  );
 }
