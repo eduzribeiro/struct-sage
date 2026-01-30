@@ -8,6 +8,143 @@ interface BudgetPreviewProps {
   companyInfo?: CompanyInfo;
 }
 
+// Componente do Cabeçalho - reutilizável para cada página
+const PageHeader = ({ showFullHeader = true }: { showFullHeader?: boolean }) => {
+  if (showFullHeader) {
+    return (
+      <div style={{ 
+        position: 'relative', 
+        height: '120px',
+        marginBottom: '0',
+        overflow: 'hidden'
+      }}>
+        {/* Fundo cinza diagonal esquerdo - exatamente como modelo */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '50%',
+          height: '100%',
+          backgroundColor: '#d1d5db',
+          clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)'
+        }} />
+        
+        {/* Área direita com fundo cinza claro */}
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          right: 0,
+          width: '60%',
+          height: '100%',
+          backgroundColor: '#f3f4f6',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <img 
+            src="/lovable-uploads/8f2a2089-73cb-4c6f-a486-4af882a94bf5.png" 
+            alt="Gama Cálculo Estrutural" 
+            style={{ height: '75px', width: 'auto' }}
+          />
+        </div>
+        
+        {/* PROPOSTA COMERCIAL - texto sobre o cinza */}
+        <div style={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '35px',
+          transform: 'translateY(-50%)',
+          zIndex: 2
+        }}>
+          <div style={{ 
+            fontSize: '28px', 
+            fontWeight: 800, 
+            fontFamily: "'Montserrat', sans-serif", 
+            lineHeight: 1.1,
+            color: '#1a1a1a',
+            letterSpacing: '-0.5px'
+          }}>
+            PROPOSTA
+          </div>
+          <div style={{ 
+            fontSize: '28px', 
+            fontWeight: 800, 
+            fontFamily: "'Montserrat', sans-serif", 
+            lineHeight: 1.1,
+            color: '#1a1a1a',
+            letterSpacing: '-0.5px'
+          }}>
+            COMERCIAL
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  // Barra cinza simples para páginas seguintes
+  return (
+    <div style={{ 
+      height: '20px',
+      backgroundColor: '#d1d5db'
+    }} />
+  );
+};
+
+// Componente do Rodapé - reutilizável para cada página
+const PageFooter = ({ companyInfo }: { companyInfo: CompanyInfo }) => (
+  <div style={{ 
+    backgroundColor: '#f3f4f6', 
+    padding: '15px 35px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '25px',
+    marginTop: 'auto',
+    flexShrink: 0
+  }}>
+    <span style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      gap: '6px', 
+      color: '#525252', 
+      fontSize: '11px' 
+    }}>
+      <Globe style={{ width: '14px', height: '14px' }} />
+      {companyInfo.website}
+    </span>
+    <span style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      gap: '6px', 
+      color: '#525252', 
+      fontSize: '11px' 
+    }}>
+      <Instagram style={{ width: '14px', height: '14px' }} />
+      {companyInfo.instagram}
+    </span>
+    <span style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      gap: '6px', 
+      color: '#525252', 
+      fontSize: '11px' 
+    }}>
+      <Phone style={{ width: '14px', height: '14px' }} />
+      {companyInfo.phone}
+    </span>
+    <span style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      gap: '6px', 
+      color: '#525252', 
+      fontSize: '11px' 
+    }}>
+      <Mail style={{ width: '14px', height: '14px' }} />
+      {companyInfo.email}
+    </span>
+  </div>
+);
+
 export function BudgetPreview({
   formData,
   budget,
@@ -16,8 +153,6 @@ export function BudgetPreview({
   const prazo = estimateDeadline(formData);
   const dataAtual = formatDate();
   
-  const getFundacaoLabels = () => formData.tipoFundacao.map(v => FUNDACAO_OPTIONS.find(o => o.value === v)?.label).filter(Boolean);
-  const getEstruturaLabels = () => formData.tipoEstrutura.map(v => ESTRUTURA_OPTIONS.find(o => o.value === v)?.label).filter(Boolean);
   const getContencaoLabels = () => formData.tipoContencao.map(v => CONTENCAO_OPTIONS.find(o => o.value === v)?.label).filter(Boolean);
 
   const hasContent = budget.subtotal > 0 || formData.obraName || formData.clienteName;
@@ -36,104 +171,37 @@ export function BudgetPreview({
     );
   }
 
-  // Estilo inline para garantir fidelidade no PDF
-  const styles = {
-    // Cores do modelo original
-    orange: '#f97316',
-    grayBg: '#d1d5db',
-    grayLight: '#f3f4f4',
-    grayText: '#525252',
-    darkText: '#1f2937',
-    bodyText: '#374151',
-    
-    // Tipografia
-    fontFamily: "'Open Sans', 'Segoe UI', sans-serif",
-  };
+  // Cores do modelo original
+  const orange = '#f97316';
+  const bodyText = '#374151';
+  const darkText = '#1f2937';
+  const grayText = '#525252';
 
   return (
     <div 
       id="budget-pdf" 
       style={{ 
-        fontFamily: styles.fontFamily, 
+        fontFamily: "'Open Sans', sans-serif", 
         backgroundColor: 'white', 
-        color: styles.darkText,
-        maxWidth: '210mm',
+        color: darkText,
+        width: '210mm',
         margin: '0 auto'
       }}
     >
       {/* ==================== PÁGINA 1 ==================== */}
-      <div style={{ minHeight: '297mm', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ 
+        height: '297mm', 
+        display: 'flex', 
+        flexDirection: 'column',
+        pageBreakAfter: 'always',
+        boxSizing: 'border-box'
+      }}>
         
-        {/* CABEÇALHO - Exatamente como o modelo */}
-        <div style={{ 
-          position: 'relative', 
-          height: '100px',
-          marginBottom: '0'
-        }}>
-          {/* Fundo cinza diagonal esquerdo */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '45%',
-            height: '100%',
-            backgroundColor: styles.grayBg,
-            clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)'
-          }} />
-          
-          {/* PROPOSTA COMERCIAL - texto no cinza */}
-          <div style={{ 
-            position: 'absolute', 
-            top: '50%', 
-            left: '40px',
-            transform: 'translateY(-50%)',
-            zIndex: 1
-          }}>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 800, 
-              fontFamily: "'Montserrat', 'Arial Black', sans-serif", 
-              lineHeight: 1.1,
-              color: '#1a1a1a',
-              letterSpacing: '0px'
-            }}>
-              PROPOSTA
-            </div>
-            <div style={{ 
-              fontSize: '24px', 
-              fontWeight: 800, 
-              fontFamily: "'Montserrat', 'Arial Black', sans-serif", 
-              lineHeight: 1.1,
-              color: '#1a1a1a',
-              letterSpacing: '0px'
-            }}>
-              COMERCIAL
-            </div>
-          </div>
-
-          {/* Área direita com fundo cinza claro e logo */}
-          <div style={{ 
-            position: 'absolute', 
-            top: 0, 
-            right: 0,
-            width: '55%',
-            height: '100%',
-            backgroundColor: styles.grayLight,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <img 
-              src="/lovable-uploads/8f2a2089-73cb-4c6f-a486-4af882a94bf5.png" 
-              alt="Gama Cálculo Estrutural" 
-              style={{ height: '65px', width: 'auto' }}
-            />
-          </div>
-        </div>
+        <PageHeader showFullHeader={true} />
 
         {/* SEÇÃO CLIENTE / LOCAL/DATA */}
         <div style={{ 
-          padding: '20px 40px 15px 40px',
+          padding: '25px 35px 20px 35px',
           display: 'flex', 
           justifyContent: 'space-between',
           alignItems: 'flex-start'
@@ -141,24 +209,24 @@ export function BudgetPreview({
           {/* Cliente */}
           <div>
             <div style={{ 
-              color: styles.orange, 
+              color: orange, 
               fontWeight: 600, 
-              fontSize: '15px', 
-              marginBottom: '4px'
+              fontSize: '16px', 
+              marginBottom: '5px'
             }}>
               Cliente:
             </div>
             <div style={{ 
-              color: styles.darkText, 
-              fontSize: '13px',
+              color: darkText, 
+              fontSize: '14px',
               lineHeight: 1.4
             }}>
               {formData.clienteName || '—'}
             </div>
             {formData.clienteEmail && (
               <div style={{ 
-                color: styles.grayText, 
-                fontSize: '12px' 
+                color: grayText, 
+                fontSize: '13px' 
               }}>
                 {formData.clienteEmail}
               </div>
@@ -168,22 +236,22 @@ export function BudgetPreview({
           {/* Local/Data */}
           <div style={{ textAlign: 'right' }}>
             <div style={{ 
-              color: styles.orange, 
+              color: orange, 
               fontWeight: 600, 
-              fontSize: '15px', 
-              marginBottom: '4px'
+              fontSize: '16px', 
+              marginBottom: '5px'
             }}>
               Local/Data:
             </div>
             <div style={{ 
-              color: styles.darkText, 
-              fontSize: '13px' 
+              color: darkText, 
+              fontSize: '14px' 
             }}>
               {formData.obraLocal || '—'}
             </div>
             <div style={{ 
-              color: styles.grayText, 
-              fontSize: '12px' 
+              color: grayText, 
+              fontSize: '13px' 
             }}>
               {dataAtual}
             </div>
@@ -191,24 +259,24 @@ export function BudgetPreview({
         </div>
 
         {/* CONTEÚDO PRINCIPAL */}
-        <div style={{ padding: '0 40px', flex: 1 }}>
+        <div style={{ padding: '0 35px', flex: 1 }}>
           
           {/* ESCOPO DO SERVIÇO */}
-          <section style={{ marginBottom: '18px' }}>
+          <section style={{ marginBottom: '22px' }}>
             <h3 style={{ 
-              color: styles.darkText, 
-              fontSize: '14px', 
+              color: darkText, 
+              fontSize: '15px', 
               fontWeight: 700, 
-              margin: '0 0 8px 0', 
+              margin: '0 0 10px 0', 
               textTransform: 'uppercase',
-              letterSpacing: '0.3px'
+              fontFamily: "'Montserrat', sans-serif"
             }}>
               ESCOPO DO SERVIÇO:
             </h3>
             <p style={{ 
-              color: styles.bodyText, 
-              fontSize: '12px', 
-              lineHeight: 1.7, 
+              color: bodyText, 
+              fontSize: '13px', 
+              lineHeight: 1.8, 
               margin: 0, 
               textAlign: 'justify' 
             }}>
@@ -218,19 +286,20 @@ export function BudgetPreview({
 
           {/* Infraestrutura */}
           {formData.tipoFundacao.length > 0 && (
-            <section style={{ marginBottom: '18px' }}>
+            <section style={{ marginBottom: '22px' }}>
               <h3 style={{ 
-                color: styles.orange, 
-                fontSize: '14px', 
+                color: orange, 
+                fontSize: '15px', 
                 fontWeight: 600, 
-                margin: '0 0 8px 0' 
+                margin: '0 0 10px 0',
+                fontFamily: "'Montserrat', sans-serif"
               }}>
                 Infraestrutura:
               </h3>
               <p style={{ 
-                color: styles.bodyText, 
-                fontSize: '12px', 
-                lineHeight: 1.7, 
+                color: bodyText, 
+                fontSize: '13px', 
+                lineHeight: 1.8, 
                 margin: 0, 
                 textAlign: 'justify' 
               }}>
@@ -241,19 +310,20 @@ export function BudgetPreview({
 
           {/* Superestrutura */}
           {formData.tipoEstrutura.length > 0 && (
-            <section style={{ marginBottom: '18px' }}>
+            <section style={{ marginBottom: '22px' }}>
               <h3 style={{ 
-                color: styles.orange, 
-                fontSize: '14px', 
+                color: orange, 
+                fontSize: '15px', 
                 fontWeight: 600, 
-                margin: '0 0 8px 0' 
+                margin: '0 0 10px 0',
+                fontFamily: "'Montserrat', sans-serif"
               }}>
                 Superestrutura:
               </h3>
               <p style={{ 
-                color: styles.bodyText, 
-                fontSize: '12px', 
-                lineHeight: 1.7, 
+                color: bodyText, 
+                fontSize: '13px', 
+                lineHeight: 1.8, 
                 margin: 0, 
                 textAlign: 'justify' 
               }}>
@@ -264,19 +334,20 @@ export function BudgetPreview({
 
           {/* Contenções */}
           {formData.tipoContencao.length > 0 && (
-            <section style={{ marginBottom: '18px' }}>
+            <section style={{ marginBottom: '22px' }}>
               <h3 style={{ 
-                color: styles.orange, 
-                fontSize: '14px', 
+                color: orange, 
+                fontSize: '15px', 
                 fontWeight: 600, 
-                margin: '0 0 8px 0' 
+                margin: '0 0 10px 0',
+                fontFamily: "'Montserrat', sans-serif"
               }}>
                 Contenções:
               </h3>
               <p style={{ 
-                color: styles.bodyText, 
-                fontSize: '12px', 
-                lineHeight: 1.7, 
+                color: bodyText, 
+                fontSize: '13px', 
+                lineHeight: 1.8, 
                 margin: 0, 
                 textAlign: 'justify' 
               }}>
@@ -287,19 +358,20 @@ export function BudgetPreview({
           )}
 
           {/* Compatibilização de Projetos */}
-          <section style={{ marginBottom: '18px' }}>
+          <section style={{ marginBottom: '22px' }}>
             <h3 style={{ 
-              color: styles.orange, 
-              fontSize: '14px', 
+              color: orange, 
+              fontSize: '15px', 
               fontWeight: 600, 
-              margin: '0 0 8px 0' 
+              margin: '0 0 10px 0',
+              fontFamily: "'Montserrat', sans-serif"
             }}>
               Compatibilização de Projetos:
             </h3>
             <p style={{ 
-              color: styles.bodyText, 
-              fontSize: '12px', 
-              lineHeight: 1.7, 
+              color: bodyText, 
+              fontSize: '13px', 
+              lineHeight: 1.8, 
               margin: 0, 
               textAlign: 'justify' 
             }}>
@@ -308,28 +380,29 @@ export function BudgetPreview({
           </section>
 
           {/* Normas Técnicas Aplicáveis */}
-          <section style={{ marginBottom: '18px' }}>
+          <section style={{ marginBottom: '22px' }}>
             <h3 style={{ 
-              color: styles.orange, 
-              fontSize: '14px', 
+              color: orange, 
+              fontSize: '15px', 
               fontWeight: 600, 
-              margin: '0 0 8px 0' 
+              margin: '0 0 10px 0',
+              fontFamily: "'Montserrat', sans-serif"
             }}>
               Normas Técnicas Aplicáveis:
             </h3>
             <p style={{ 
-              color: styles.bodyText, 
-              fontSize: '12px', 
-              lineHeight: 1.6, 
-              margin: '0 0 8px 0', 
+              color: bodyText, 
+              fontSize: '13px', 
+              lineHeight: 1.7, 
+              margin: '0 0 10px 0', 
               textAlign: 'justify' 
             }}>
               Os serviços de dimensionamento estrutural serão realizados em conformidade com as normas da Associação Brasileira de Normas Técnicas (ABNT), destacando-se:
             </p>
             <ul style={{ 
-              color: styles.bodyText, 
-              fontSize: '11px', 
-              lineHeight: 1.6, 
+              color: bodyText, 
+              fontSize: '12px', 
+              lineHeight: 1.7, 
               margin: 0, 
               paddingLeft: '20px' 
             }}>
@@ -345,19 +418,20 @@ export function BudgetPreview({
           </section>
 
           {/* Metodologia */}
-          <section style={{ marginBottom: '18px' }}>
+          <section style={{ marginBottom: '22px' }}>
             <h3 style={{ 
-              color: styles.orange, 
-              fontSize: '14px', 
+              color: orange, 
+              fontSize: '15px', 
               fontWeight: 600, 
-              margin: '0 0 8px 0' 
+              margin: '0 0 10px 0',
+              fontFamily: "'Montserrat', sans-serif"
             }}>
               Metodologia:
             </h3>
             <p style={{ 
-              color: styles.bodyText, 
-              fontSize: '12px', 
-              lineHeight: 1.7, 
+              color: bodyText, 
+              fontSize: '13px', 
+              lineHeight: 1.8, 
               margin: 0, 
               textAlign: 'justify' 
             }}>
@@ -366,117 +440,65 @@ export function BudgetPreview({
           </section>
         </div>
 
-        {/* RODAPÉ - Página 1 */}
-        <div style={{ 
-          backgroundColor: styles.grayLight, 
-          borderTop: `3px solid ${styles.grayBg}`,
-          padding: '12px 40px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '30px',
-          marginTop: 'auto'
-        }}>
-          <span style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px', 
-            color: styles.grayText, 
-            fontSize: '10px' 
-          }}>
-            <Globe style={{ width: '12px', height: '12px' }} />
-            {companyInfo.website}
-          </span>
-          <span style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px', 
-            color: styles.grayText, 
-            fontSize: '10px' 
-          }}>
-            <Instagram style={{ width: '12px', height: '12px' }} />
-            {companyInfo.instagram}
-          </span>
-          <span style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px', 
-            color: styles.grayText, 
-            fontSize: '10px' 
-          }}>
-            <Phone style={{ width: '12px', height: '12px' }} />
-            {companyInfo.phone}
-          </span>
-          <span style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px', 
-            color: styles.grayText, 
-            fontSize: '10px' 
-          }}>
-            <Mail style={{ width: '12px', height: '12px' }} />
-            {companyInfo.email}
-          </span>
-        </div>
+        <PageFooter companyInfo={companyInfo} />
       </div>
 
       {/* ==================== PÁGINA 2 ==================== */}
       <div style={{ 
-        minHeight: '297mm', 
+        height: '297mm', 
         display: 'flex', 
         flexDirection: 'column',
-        pageBreakBefore: 'always'
+        pageBreakBefore: 'always',
+        boxSizing: 'border-box'
       }}>
         
-        {/* Barra cinza superior - Página 2 */}
-        <div style={{ 
-          height: '10px',
-          backgroundColor: styles.grayBg
-        }} />
+        {/* Barra cinza superior - igual à referência */}
+        <PageHeader showFullHeader={false} />
 
         {/* CONTEÚDO - Página 2 */}
-        <div style={{ padding: '25px 40px', flex: 1 }}>
+        <div style={{ padding: '30px 35px', flex: 1 }}>
           
           {/* Prazos e etapas */}
-          <section style={{ marginBottom: '20px' }}>
+          <section style={{ marginBottom: '25px' }}>
             <h3 style={{ 
-              color: styles.orange, 
-              fontSize: '14px', 
+              color: orange, 
+              fontSize: '15px', 
               fontWeight: 600, 
-              margin: '0 0 10px 0' 
+              margin: '0 0 12px 0',
+              fontFamily: "'Montserrat', sans-serif"
             }}>
               Prazos e etapas:
             </h3>
             <p style={{ 
-              color: styles.bodyText, 
-              fontSize: '12px', 
-              lineHeight: 1.7, 
-              margin: '0 0 12px 0', 
+              color: bodyText, 
+              fontSize: '13px', 
+              lineHeight: 1.8, 
+              margin: '0 0 15px 0', 
               textAlign: 'justify' 
             }}>
               O prazo de execução dos serviços propostos é de <strong>{prazo}</strong>, contados a partir da entrega de todas as informações necessárias para o início do projeto, incluindo dados geotécnicos, arquitetônicos e das instalações de engenharia.
             </p>
             <p style={{ 
-              color: styles.bodyText, 
-              fontSize: '12px', 
-              lineHeight: 1.7, 
-              margin: '0 0 12px 0', 
+              color: bodyText, 
+              fontSize: '13px', 
+              lineHeight: 1.8, 
+              margin: '0 0 15px 0', 
               textAlign: 'justify' 
             }}>
               O desenvolvimento do projeto será estruturado de forma a garantir a qualidade técnica, a compatibilização entre disciplinas e a eficiência na execução.
             </p>
             <p style={{ 
-              color: styles.bodyText, 
-              fontSize: '12px', 
+              color: bodyText, 
+              fontSize: '13px', 
               fontWeight: 600, 
-              margin: '0 0 8px 0' 
+              margin: '0 0 10px 0' 
             }}>
               As etapas do projeto incluem:
             </p>
             <ul style={{ 
-              color: styles.bodyText, 
-              fontSize: '11px', 
-              lineHeight: 1.7, 
+              color: bodyText, 
+              fontSize: '12px', 
+              lineHeight: 1.8, 
               margin: 0, 
               paddingLeft: '20px' 
             }}>
@@ -489,77 +511,122 @@ export function BudgetPreview({
           </section>
 
           {/* VALORES - Exatamente como o modelo */}
-          <section style={{ marginBottom: '20px' }}>
+          <section style={{ marginBottom: '25px' }}>
             <h3 style={{ 
-              color: styles.orange, 
-              fontSize: '14px', 
+              color: orange, 
+              fontSize: '15px', 
               fontWeight: 600, 
-              margin: '0 0 12px 0' 
+              margin: '0 0 15px 0',
+              fontFamily: "'Montserrat', sans-serif"
             }}>
               Valores:
             </h3>
             
-            <div style={{ maxWidth: '500px' }}>
-              {/* Linhas de valores */}
-              {budget.visitaTecnica && (
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  padding: '8px 0', 
-                  borderBottom: '1px solid #e5e5e5' 
-                }}>
-                  <span style={{ color: styles.bodyText, fontSize: '12px' }}>Visita técnica</span>
-                  <span style={{ color: styles.bodyText, fontSize: '12px' }}>{formatCurrency(budget.visitaTecnica.valor)}</span>
-                </div>
-              )}
-              
-              {budget.infraestruturaFundacoes && (
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  padding: '8px 0', 
-                  borderBottom: '1px solid #e5e5e5' 
-                }}>
-                  <span style={{ color: styles.bodyText, fontSize: '12px' }}>Projeto de infraestrutura - Fundações</span>
-                  <span style={{ color: styles.bodyText, fontSize: '12px' }}>{formatCurrency(budget.infraestruturaFundacoes.valor)}</span>
-                </div>
-              )}
-              
-              {budget.infraestruturaContencoes && (
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  padding: '8px 0', 
-                  borderBottom: '1px solid #e5e5e5' 
-                }}>
-                  <span style={{ color: styles.bodyText, fontSize: '12px' }}>Projeto de infraestrutura - Contenções</span>
-                  <span style={{ color: styles.bodyText, fontSize: '12px' }}>{formatCurrency(budget.infraestruturaContencoes.valor)}</span>
-                </div>
-              )}
-              
-              {budget.superestrutura && (
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  padding: '8px 0', 
-                  borderBottom: '1px solid #e5e5e5' 
-                }}>
-                  <span style={{ color: styles.bodyText, fontSize: '12px' }}>Projeto de superestrutura - Estruturas</span>
-                  <span style={{ color: styles.bodyText, fontSize: '12px' }}>{formatCurrency(budget.superestrutura.valor)}</span>
-                </div>
-              )}
+            <div style={{ maxWidth: '100%' }}>
+              {/* Tabela de valores */}
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <tbody>
+                  {budget.visitaTecnica && (
+                    <tr>
+                      <td style={{ 
+                        padding: '10px 0', 
+                        borderBottom: '1px solid #e5e5e5',
+                        color: bodyText,
+                        fontSize: '13px'
+                      }}>
+                        Visita técnica
+                      </td>
+                      <td style={{ 
+                        padding: '10px 0', 
+                        borderBottom: '1px solid #e5e5e5',
+                        color: bodyText,
+                        fontSize: '13px',
+                        textAlign: 'right'
+                      }}>
+                        {formatCurrency(budget.visitaTecnica.valor)}
+                      </td>
+                    </tr>
+                  )}
+                  
+                  {budget.infraestruturaFundacoes && (
+                    <tr>
+                      <td style={{ 
+                        padding: '10px 0', 
+                        borderBottom: '1px solid #e5e5e5',
+                        color: bodyText,
+                        fontSize: '13px'
+                      }}>
+                        Projeto de infraestrutura - Fundações
+                      </td>
+                      <td style={{ 
+                        padding: '10px 0', 
+                        borderBottom: '1px solid #e5e5e5',
+                        color: bodyText,
+                        fontSize: '13px',
+                        textAlign: 'right'
+                      }}>
+                        {formatCurrency(budget.infraestruturaFundacoes.valor)}
+                      </td>
+                    </tr>
+                  )}
+                  
+                  {budget.infraestruturaContencoes && (
+                    <tr>
+                      <td style={{ 
+                        padding: '10px 0', 
+                        borderBottom: '1px solid #e5e5e5',
+                        color: bodyText,
+                        fontSize: '13px'
+                      }}>
+                        Projeto de infraestrutura - Contenções
+                      </td>
+                      <td style={{ 
+                        padding: '10px 0', 
+                        borderBottom: '1px solid #e5e5e5',
+                        color: bodyText,
+                        fontSize: '13px',
+                        textAlign: 'right'
+                      }}>
+                        {formatCurrency(budget.infraestruturaContencoes.valor)}
+                      </td>
+                    </tr>
+                  )}
+                  
+                  {budget.superestrutura && (
+                    <tr>
+                      <td style={{ 
+                        padding: '10px 0', 
+                        borderBottom: '1px solid #e5e5e5',
+                        color: bodyText,
+                        fontSize: '13px'
+                      }}>
+                        Projeto de superestrutura - Estruturas
+                      </td>
+                      <td style={{ 
+                        padding: '10px 0', 
+                        borderBottom: '1px solid #e5e5e5',
+                        color: bodyText,
+                        fontSize: '13px',
+                        textAlign: 'right'
+                      }}>
+                        {formatCurrency(budget.superestrutura.valor)}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
               
               {/* TOTAL */}
               <div style={{ 
                 display: 'flex', 
                 justifyContent: 'flex-end', 
                 alignItems: 'center',
-                gap: '20px',
-                padding: '12px 0', 
-                borderBottom: '1px solid #1f2937'
+                gap: '30px',
+                padding: '15px 0', 
+                borderBottom: '2px solid #1f2937'
               }}>
-                <span style={{ color: styles.darkText, fontSize: '13px', fontWeight: 700 }}>Total:</span>
-                <span style={{ color: styles.darkText, fontSize: '16px', fontWeight: 700 }}>{formatCurrency(budget.total)}</span>
+                <span style={{ color: darkText, fontSize: '14px', fontWeight: 700 }}>Total:</span>
+                <span style={{ color: darkText, fontSize: '18px', fontWeight: 700 }}>{formatCurrency(budget.total)}</span>
               </div>
               
               {/* DESCONTO - com borda laranja como no modelo */}
@@ -567,16 +634,16 @@ export function BudgetPreview({
                 display: 'flex', 
                 justifyContent: 'flex-end',
                 alignItems: 'center',
-                gap: '20px',
-                padding: '15px 0'
+                gap: '30px',
+                padding: '20px 0'
               }}>
-                <span style={{ color: styles.bodyText, fontSize: '12px' }}>Desconto de 7% para pagamento à vista</span>
+                <span style={{ color: bodyText, fontSize: '13px' }}>Desconto de 7% para pagamento à vista</span>
                 <span style={{ 
-                  color: styles.orange, 
-                  fontSize: '20px', 
+                  color: orange, 
+                  fontSize: '22px', 
                   fontWeight: 700,
-                  border: `2px solid ${styles.orange}`,
-                  padding: '6px 14px',
+                  border: `2px solid ${orange}`,
+                  padding: '8px 18px',
                   borderRadius: '4px'
                 }}>
                   {formatCurrency(budget.totalAVista)}
@@ -586,19 +653,20 @@ export function BudgetPreview({
           </section>
 
           {/* Pagamento */}
-          <section style={{ marginBottom: '25px' }}>
+          <section style={{ marginBottom: '30px' }}>
             <h3 style={{ 
-              color: styles.orange, 
-              fontSize: '14px', 
+              color: orange, 
+              fontSize: '15px', 
               fontWeight: 600, 
-              margin: '0 0 10px 0' 
+              margin: '0 0 12px 0',
+              fontFamily: "'Montserrat', sans-serif"
             }}>
               Pagamento:
             </h3>
             <p style={{ 
-              color: styles.bodyText, 
-              fontSize: '12px', 
-              lineHeight: 1.7, 
+              color: bodyText, 
+              fontSize: '13px', 
+              lineHeight: 1.8, 
               margin: 0, 
               textAlign: 'justify' 
             }}>
@@ -609,122 +677,72 @@ export function BudgetPreview({
           {/* Validade */}
           <div style={{ 
             textAlign: 'right',
-            marginBottom: '30px'
+            marginBottom: '35px'
           }}>
             <p style={{ 
-              color: styles.grayText, 
-              fontSize: '11px',
-              fontStyle: 'italic',
+              color: grayText, 
+              fontSize: '12px',
               margin: 0
             }}>
               Este orçamento tem validade de 15 dias.
             </p>
           </div>
 
-          {/* Linha laranja separadora */}
+          {/* Linha laranja separadora - exatamente como modelo */}
           <div style={{ 
-            borderTop: `4px solid ${styles.orange}`,
-            width: '80px',
-            marginBottom: '15px'
+            borderTop: `5px solid ${orange}`,
+            width: '90px',
+            marginBottom: '20px'
           }} />
 
           {/* Diretor de operações */}
-          <section style={{ marginBottom: '30px' }}>
+          <section style={{ marginBottom: '35px' }}>
             <h4 style={{ 
-              color: styles.darkText, 
-              fontSize: '15px', 
+              color: darkText, 
+              fontSize: '16px', 
               fontWeight: 600, 
-              margin: '0 0 6px 0' 
+              margin: '0 0 8px 0',
+              fontFamily: "'Montserrat', sans-serif"
             }}>
               Diretor de operações
             </h4>
-            <p style={{ color: styles.bodyText, fontSize: '12px', margin: '0 0 2px 0' }}>
+            <p style={{ color: bodyText, fontSize: '13px', margin: '0 0 3px 0' }}>
               {companyInfo.director} | Engenheiro civil | {companyInfo.crea}
             </p>
-            <p style={{ color: styles.grayText, fontSize: '11px', margin: 0 }}>
+            <p style={{ color: grayText, fontSize: '12px', margin: 0 }}>
               Especialista em Engenharia de Estruturas e Fundações
             </p>
           </section>
 
-          {/* Logo centralizado com fundo cinza */}
+          {/* Logo centralizado com fundo cinza - exatamente como modelo */}
           <div style={{ 
-            backgroundColor: styles.grayLight,
-            padding: '25px',
+            backgroundColor: '#f3f4f6',
+            padding: '30px',
             textAlign: 'center',
-            marginBottom: '20px'
+            marginBottom: '25px'
           }}>
             <img 
               src="/lovable-uploads/8f2a2089-73cb-4c6f-a486-4af882a94bf5.png" 
               alt="Gama Cálculo Estrutural" 
-              style={{ height: '70px', width: 'auto' }}
+              style={{ height: '80px', width: 'auto' }}
             />
           </div>
 
-          {/* Tagline laranja */}
+          {/* Tagline laranja - exatamente como modelo */}
           <div style={{ textAlign: 'center', marginBottom: '20px' }}>
             <p style={{ 
-              color: styles.orange, 
-              fontSize: '14px', 
+              color: orange, 
+              fontSize: '16px', 
               fontWeight: 600, 
-              margin: 0 
+              margin: 0,
+              fontFamily: "'Montserrat', sans-serif"
             }}>
               Segurança estrutural começa com um projeto confiável. Fale conosco.
             </p>
           </div>
         </div>
 
-        {/* RODAPÉ - Página 2 */}
-        <div style={{ 
-          backgroundColor: styles.grayLight, 
-          borderTop: `3px solid ${styles.grayBg}`,
-          padding: '12px 40px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '30px',
-          marginTop: 'auto'
-        }}>
-          <span style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px', 
-            color: styles.grayText, 
-            fontSize: '10px' 
-          }}>
-            <Globe style={{ width: '12px', height: '12px' }} />
-            {companyInfo.website}
-          </span>
-          <span style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px', 
-            color: styles.grayText, 
-            fontSize: '10px' 
-          }}>
-            <Instagram style={{ width: '12px', height: '12px' }} />
-            {companyInfo.instagram}
-          </span>
-          <span style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px', 
-            color: styles.grayText, 
-            fontSize: '10px' 
-          }}>
-            <Phone style={{ width: '12px', height: '12px' }} />
-            {companyInfo.phone}
-          </span>
-          <span style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px', 
-            color: styles.grayText, 
-            fontSize: '10px' 
-          }}>
-            <Mail style={{ width: '12px', height: '12px' }} />
-            {companyInfo.email}
-          </span>
-        </div>
+        <PageFooter companyInfo={companyInfo} />
       </div>
     </div>
   );
